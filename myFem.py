@@ -4,7 +4,7 @@ import math
 ti.init(arch=ti.cpu)
 
 # global control
-paused = True
+paused = False
 damping_toggle = ti.field(ti.i32, ())
 curser = ti.Vector.field(2, ti.f32, ())
 picking = ti.field(ti.i32,())
@@ -103,7 +103,7 @@ def meshing():
 @ti.kernel
 def initialize():
     YoungsModulus[None] = 3e6
-    paused = True
+    # paused = True
     # init position and velocity
     for i, j in ti.ndrange(N_x, N_y):
         index = ij_2_index(i, j)
@@ -259,6 +259,8 @@ initialize_elements()
 updateLameCoeff()
 
 gui = ti.GUI('Linear FEM', (800, 800), 0xDDDDDD)
+
+frame=0
 while gui.running:
 
     picking[None]=0
@@ -337,7 +339,8 @@ while gui.running:
     else:
         gui.text(
             content='D: Damping Off', pos=(0.6, 0.85), color=0x000000)
-    gui.show()
+    gui.show(f'./temp/{frame:04d}.png')
+    frame+=1
 
 
 
